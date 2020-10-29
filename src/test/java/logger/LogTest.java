@@ -62,7 +62,7 @@ public class LogTest {
     public void shouldWriteLongLogToLogFile() throws FileNotFoundException {
 
         Log.clearLog();
-        long test = 999999999999999999l;
+        long test = 999999999999999999L;
         Log.out(test);
 
         assertThat(Log.getLogFile()).exists();

@@ -5,10 +5,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Log {
 
     private static File logFile;
+
+    private Log() {
+    }
 
     public static void showLog() {
         Desktop desktop = Desktop.getDesktop();
@@ -21,6 +26,7 @@ public class Log {
 
     public static void out(String log) {
         write(log);
+
     }
 
     public static void out(Exception log) {
@@ -46,19 +52,19 @@ public class Log {
     private static File createLogFile() throws IOException {
         File file = new File("log.txt");
         if (!file.createNewFile()) {
-            file.delete();
+            Files.delete(Path.of(file.getAbsolutePath()));
             createLogFile();
         }
         return file;
     }
 
-    private static boolean write(String log) {
+    private static void write(String log) {
 
         if (logFile == null || !logFile.exists()) {
             try {
                 logFile = createLogFile();
             } catch (IOException e) {
-                return false;
+                e.printStackTrace();
             }
         }
 
@@ -68,26 +74,24 @@ public class Log {
             write.newLine();
             write.close();
         } catch (IOException e) {
-            return false;
+            e.printStackTrace();
         }
-        return true;
     }
 
     public static File getLogFile() {
         return logFile;
     }
 
-    public static boolean clearLog(){
-        if(logFile != null) {
+    public static void clearLog() {
+        if (logFile != null) {
             try {
                 BufferedWriter clear = new BufferedWriter(new FileWriter(logFile));
                 clear.write("");
                 clear.close();
-            } catch (IOException e){
-                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        return true;
     }
 
 }
