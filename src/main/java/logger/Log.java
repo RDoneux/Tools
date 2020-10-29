@@ -4,21 +4,28 @@ import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 public class Log {
 
     private static File logFile;
+    private static Level level;
 
     private Log() {
+    }
+
+    public enum Level {
+        WARNING, ERROR, DEBUG, LOG
     }
 
     public static void showLog() {
         Desktop desktop = Desktop.getDesktop();
         try {
-            if(logFile != null) {
+            if (logFile != null) {
                 desktop.open(logFile);
             } else {
-                throw new NullPointerException("Log file is empty");
+                createLogFile();
+                showLog();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -27,7 +34,6 @@ public class Log {
 
     public static void out(String log) {
         write(log);
-
     }
 
     public static void out(Exception log) {
@@ -53,7 +59,7 @@ public class Log {
         write(String.valueOf(log));
     }
 
-    public static void newLine(){
+    public static void newLine() {
         write("");
     }
 
@@ -63,34 +69,54 @@ public class Log {
             Files.delete(Path.of(file.getAbsolutePath()));
             createLogFile();
         }
-        return file;
+        logFile = file;
+        return logFile;
+    }
+
+    private static String createTimeStamp() {
+        LocalDateTime time = LocalDateTime.now();
+        return new StringBuilder()
+                .append(time.getHour()).append(":")
+                .append(time.getMinute()).append(":")
+                .append(time.getSecond()).append(":")
+                .append(time.getNano()).toString();
     }
 
     private static void write(String log) {
 
         if (logFile == null || !logFile.exists()) {
             try {
-                logFile = createLogFile();
+                createLogFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+        if (level == null) {
+            level = Level.LOG;
+        }
+
         try {
             BufferedWriter write = new BufferedWriter(new FileWriter(logFile, true));
+            if (!log.isEmpty()) write.write("[" + level + ":" + createTimeStamp() + "]: ");
             write.write(log);
             write.newLine();
             write.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        level = null;
     }
 
     public static File getLogFile() {
         return logFile;
     }
+    public static void level(Level newLevel){
+       level = newLevel;
+    }
 
-    public static void clearLog() {
+    public static void clear() {
         if (logFile != null) {
             try {
                 BufferedWriter clear = new BufferedWriter(new FileWriter(logFile));
