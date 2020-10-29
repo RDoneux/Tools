@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class LogTest {
 
     @Test
@@ -25,7 +24,7 @@ public class LogTest {
     public void shouldWriteErrorLogToLogFile() throws FileNotFoundException {
 
         Log.clearLog();
-        Log.out(new IllegalAccessException("test error"));
+        Log.out(new IllegalAccessException("test error").getMessage());
 
         assertThat(Log.getLogFile()).exists();
 
@@ -84,6 +83,11 @@ public class LogTest {
         Scanner scan = new Scanner(Log.getLogFile());
         assertThat(scan.nextLine()).isEqualTo("c");
 
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldThrowNullPointerWhenLogFileIsEmpty(){
+        Log.showLog();
     }
 
     @Test

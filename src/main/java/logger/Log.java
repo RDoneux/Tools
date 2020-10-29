@@ -1,10 +1,7 @@
 package logger;
 
 import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -18,7 +15,11 @@ public class Log {
     public static void showLog() {
         Desktop desktop = Desktop.getDesktop();
         try {
-            desktop.open(logFile);
+            if(logFile != null) {
+                desktop.open(logFile);
+            } else {
+                throw new NullPointerException("Log file is empty");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,7 +31,10 @@ public class Log {
     }
 
     public static void out(Exception log) {
-        write(log.getMessage());
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        log.printStackTrace(pw);
+        write(sw.toString());
     }
 
     public static void out(int log) {
@@ -47,6 +51,10 @@ public class Log {
 
     public static void out(char log) {
         write(String.valueOf(log));
+    }
+
+    public static void newLine(){
+        write("");
     }
 
     private static File createLogFile() throws IOException {
