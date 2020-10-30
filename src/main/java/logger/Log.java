@@ -66,7 +66,7 @@ public class Log {
     private static File createLogFile() throws IOException {
         File file = new File("log.txt");
         if (!file.createNewFile()) {
-            Files.delete(Path.of(file.getAbsolutePath()));
+            Files.delete(file.toPath());
             createLogFile();
         }
         logFile = file;
