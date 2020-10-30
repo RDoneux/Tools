@@ -3,19 +3,19 @@ package logger;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 public class Log {
 
     private static File logFile;
+    private static String location = "log.txt";
     private static Level level;
 
     private Log() {
     }
 
     public enum Level {
-        WARNING, ERROR, DEBUG, LOG
+        WARNING, ERROR, DEBUG, INFO
     }
 
     public static void showLog() {
@@ -40,6 +40,7 @@ public class Log {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         log.printStackTrace(pw);
+        level = Level.ERROR;
         write(sw.toString());
     }
 
@@ -63,23 +64,24 @@ public class Log {
         write("");
     }
 
-    private static File createLogFile() throws IOException {
-        File file = new File("log.txt");
+    private static void createLogFile() throws IOException {
+        File file = new File(location);
+        if (file.getParentFile() != null) {
+            file.getParentFile().mkdirs();
+        }
         if (!file.createNewFile()) {
             Files.delete(file.toPath());
             createLogFile();
         }
         logFile = file;
-        return logFile;
     }
 
     private static String createTimeStamp() {
         LocalDateTime time = LocalDateTime.now();
-        return new StringBuilder()
-                .append(time.getHour()).append(":")
-                .append(time.getMinute()).append(":")
-                .append(time.getSecond()).append(":")
-                .append(time.getNano()).toString();
+        return time.getHour() + ":" +
+                time.getMinute() + ":" +
+                time.getSecond() + ":" +
+                time.getNano();
     }
 
     private static void write(String log) {
@@ -93,7 +95,7 @@ public class Log {
         }
 
         if (level == null) {
-            level = Level.LOG;
+            level = Level.INFO;
         }
 
         try {
@@ -112,8 +114,27 @@ public class Log {
     public static File getLogFile() {
         return logFile;
     }
-    public static void level(Level newLevel){
-       level = newLevel;
+
+    public static void location(String newLocation) {
+        location = newLocation + ".txt";
+        logFile = null;
+    }
+
+    public static void name(String name) {
+        if (logFile != null) {
+            location = logFile.getParentFile().getAbsolutePath() + File.separator + name + ".txt";
+        } else {
+            location = name + ".txt";
+        }
+        logFile = null;
+    }
+
+    public static void level(Level newLevel) {
+        level = newLevel;
+    }
+
+    public static String getLocation() {
+        return location;
     }
 
     public static void clear() {
@@ -126,6 +147,13 @@ public class Log {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static boolean delete() {
+        if (logFile == null) {
+            return false;
+        }
+        return logFile.delete();
     }
 
 }
