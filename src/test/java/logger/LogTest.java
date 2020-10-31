@@ -230,4 +230,23 @@ public class LogTest {
         assertThat(Log.delete()).isTrue();
         assertThat(Log.getLogFile()).doesNotExist();
     }
+
+    @Test
+    public void shouldSearchLogFile() {
+
+        Log.out("this is the first line");
+        Log.out("this is the second line");
+        Log.level(Log.Level.ERROR);
+        Log.out("this is the line that should be searched for");
+        Log.level(Log.Level.ERROR);
+        Log.out("this line should also be searched for");
+
+        String searchLine = Log.search("ERROR");
+
+        assertThat(searchLine).contains("this is the line that should be searched for");
+        assertThat(searchLine).contains("this line should also be searched for");
+
+        // clean up
+        Log.delete();
+    }
 }

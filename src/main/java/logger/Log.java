@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class Log {
 
@@ -155,5 +156,40 @@ public class Log {
         }
         return logFile.delete();
     }
+
+    public static String search(String keyWord) {
+
+        StringBuilder build = new StringBuilder();
+
+        try {
+            Scanner scan = new Scanner(logFile);
+
+            File searchLog = new File("searchLog.txt");
+            BufferedWriter write = new BufferedWriter(new FileWriter(searchLog));
+
+            while (scan.hasNext()) {
+                String line = scan.nextLine();
+                if (line.toLowerCase().contains(keyWord.toLowerCase())) {
+                    build.append(line + "-");
+                    write.write(line);
+                    write.newLine();
+                }
+            }
+            write.close();
+            scan.close();
+
+            Desktop.getDesktop().open(searchLog);
+            searchLog.deleteOnExit();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return build.toString();
+
+    }
+
 
 }
