@@ -212,11 +212,12 @@ public class Log {
                 String inputSubstring = input.substring(j, j + 1);
                 if (inputSubstring.equals(sequenceSubstring)) {
                     checkList[i] = true;
+                    break;
                 }
             }
         }
         for (boolean check : checkList) {
-            if (check == false) {
+            if (!check) {
                 return false;
             }
         }
