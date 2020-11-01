@@ -18,7 +18,7 @@ public class LogImplementationTest {
 
         Log.out("While loop created with argument to repeat until correct number guessed");
         boolean guessed = false;
-        Log.out("boolean controlling while loop created and set to: " + guessed);
+        Log.out("boolean controlling while loop created and set to: false");
         while (!guessed) {
             System.setIn(new ByteArrayInputStream(String.valueOf(new Random().nextInt(15)).getBytes()));
             Log.out("input stream created");
@@ -28,9 +28,9 @@ public class LogImplementationTest {
                 Log.out("Scanner class created... waiting for user input");
                 Log.newLine();
             } else {
-                Log.level(Log.Level.WARNING);
+                Log.level(Level.WARNING);
                 Log.out("Error creating scanner class. Scan not created");
-                Log.level(Log.Level.ERROR);
+                Log.level(Level.ERROR);
                 Log.out(new NullPointerException());
             }
             int guess = Integer.valueOf(scan.nextLine());
@@ -39,12 +39,12 @@ public class LogImplementationTest {
                 if (guess == number) {
                     Log.out("correct number chosen: " + guess);
                     guessed = true;
-                    Log.out("boolean controlling while loop updated to : " + guessed);
+                    Log.out("boolean controlling while loop updated to: true");
                 } else {
                     Log.out("incorrect number chosen: " + guess);
                 }
             } else {
-                Log.level(Log.Level.WARNING);
+                Log.level(Level.WARNING);
                 Log.out("invalid number chosen: " + guess);
                 Log.out(new IllegalArgumentException());
             }
@@ -53,6 +53,7 @@ public class LogImplementationTest {
         Log.out("while loop terminated");
 
         Log.showLog();
+        Log.search("ERROR");
 
     }
 

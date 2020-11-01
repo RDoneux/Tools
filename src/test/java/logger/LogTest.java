@@ -18,7 +18,6 @@ public class LogTest {
         Files.delete(file.toPath());
 
         Log.showLog();
-
     }
 
     @Test
@@ -128,7 +127,7 @@ public class LogTest {
     public void shouldSetLogPriorityDEBUG() throws FileNotFoundException {
 
         Log.clear();
-        Log.level(Log.Level.DEBUG);
+        Log.level(Level.DEBUG);
         Log.out("test");
 
         Scanner scan = new Scanner(Log.getLogFile());
@@ -143,7 +142,7 @@ public class LogTest {
     public void shouldSetLogPriorityWARNING() throws FileNotFoundException {
 
         Log.clear();
-        Log.level(Log.Level.WARNING);
+        Log.level(Level.WARNING);
         Log.out("test");
 
         Scanner scan = new Scanner(Log.getLogFile());
@@ -156,13 +155,13 @@ public class LogTest {
     }
 
     @Test
-    public void shouldSetLogPriorityLOG() throws FileNotFoundException {
+    public void shouldSetLogPriorityINFO() throws FileNotFoundException {
 
         Log.clear();
         Log.out("test");
 
         Scanner scan = new Scanner(Log.getLogFile());
-        assertThat(scan.nextLine()).contains("LOG");
+        assertThat(scan.nextLine()).contains("INFO");
         scan.close();
 
         // clean up
@@ -174,7 +173,7 @@ public class LogTest {
     public void shouldSetLogPriorityERROR() throws FileNotFoundException {
 
         Log.clear();
-        Log.level(Log.Level.ERROR);
+        Log.level(Level.ERROR);
         Log.out("test");
 
         Scanner scan = new Scanner(Log.getLogFile());
@@ -190,7 +189,7 @@ public class LogTest {
     public void shouldUpdateLogLocation() throws FileNotFoundException {
 
         Log.clear();
-        Log.location("logs\\log");
+        Log.location("testLogOne");
 
         Log.out("this is the test line");
 
@@ -235,18 +234,41 @@ public class LogTest {
     public void shouldSearchLogFile() {
 
         Log.out("this is the first line");
+        Log.level(Level.WARNING);
+        Log.out("this should only be searched on the second search call");
         Log.out("this is the second line");
-        Log.level(Log.Level.ERROR);
+        Log.level(Level.ERROR);
         Log.out("this is the line that should be searched for");
-        Log.level(Log.Level.ERROR);
+        Log.level(Level.ERROR);
         Log.out("this line should also be searched for");
 
         String searchLine = Log.search("ERROR");
 
-        assertThat(searchLine).contains("this is the line that should be searched for");
-        assertThat(searchLine).contains("this line should also be searched for");
+        assertThat(searchLine).contains("this is the line that should be searched for")
+                .contains("this line should also be searched for");
+
+        searchLine = Log.search("ERROR, WARNING");
+
+        assertThat(searchLine).contains("this should only be searched on the second search call");
 
         // clean up
-        Log.delete();
+        assertThat(Log.delete()).isTrue();
+    }
+
+    @Test
+    public void shouldReturnAllLinesFromError() {
+
+        Log.out("first line should not return");
+        Log.out(new IllegalArgumentException("this is the line that should be returned"));
+        Log.out("second line should not return");
+        Log.out("third line of the test");
+        Log.out(new NullPointerException("this line should also be returned"));
+
+        assertThat(Log.search("ERROR"))
+                .contains("this is the line that should be returned")
+                .contains("this line should also be returned");
+
+        // clean up
+        assertThat(Log.delete()).isTrue();
     }
 }

@@ -13,10 +13,7 @@ public class Log {
     private static Level level;
 
     private Log() {
-    }
-
-    public enum Level {
-        WARNING, ERROR, DEBUG, INFO
+        //EMPTY
     }
 
     public static void showLog() {
@@ -67,8 +64,8 @@ public class Log {
 
     private static void createLogFile() throws IOException {
         File file = new File(location);
-        if (file.getParentFile() != null) {
-            file.getParentFile().mkdirs();
+        if (file.getParentFile() != null && !file.getParentFile().mkdirs()) {
+            throw new NullPointerException("parent file could not be created");
         }
         if (!file.createNewFile()) {
             Files.delete(file.toPath());
@@ -122,7 +119,7 @@ public class Log {
     }
 
     public static void name(String name) {
-        if (logFile != null) {
+        if (logFile != null && logFile.getParentFile() != null) {
             location = logFile.getParentFile().getAbsolutePath() + File.separator + name + ".txt";
         } else {
             location = name + ".txt";
@@ -153,37 +150,51 @@ public class Log {
     public static boolean delete() {
         if (logFile == null) {
             return false;
+        } else {
+            return logFile.delete();
         }
-        return logFile.delete();
     }
 
-    public static String search(String keyWord) {
+    public static String search(String searchCase) {
 
+        String[] keywords = searchCase.split(", ");
         StringBuilder build = new StringBuilder();
 
         try {
-            Scanner scan = new Scanner(logFile);
-
             File searchLog = new File("searchLog.txt");
             BufferedWriter write = new BufferedWriter(new FileWriter(searchLog));
 
-            while (scan.hasNext()) {
-                String line = scan.nextLine();
-                if (line.toLowerCase().contains(keyWord.toLowerCase())) {
-                    build.append(line + "-");
-                    write.write(line);
-                    write.newLine();
+            for (String keyWord : keywords) {
+                Scanner scan = new Scanner(logFile);
+                write.newLine();
+                write.write("** " + keyWord.toUpperCase() + " **");
+                write.newLine();
+                while (scan.hasNext()) {
+                    String line = scan.nextLine();
+                    if (!contains(line, "[:::::]")) {
+                        build.append(line);
+                        write.write(line);
+                        write.newLine();
+                    } else {
+                        if (line.toLowerCase().contains(keyWord.toLowerCase())) {
+                            build.append(line).append("-");
+                            write.write(line);
+                            write.newLine();
+                        }
+                    }
                 }
+                scan.close();
             }
             write.close();
-            scan.close();
 
             Desktop.getDesktop().open(searchLog);
-            searchLog.deleteOnExit();
+            Thread.sleep(500);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            if (!searchLog.delete()) {
+                throw new NullPointerException("search log could not be deleted");
+            }
+
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -191,5 +202,24 @@ public class Log {
 
     }
 
+    private static boolean contains(String input, String sequence) {
 
+        boolean[] checkList = new boolean[sequence.length()];
+
+        for (int i = 0; i < sequence.length(); i++) {
+            String sequenceSubstring = sequence.substring(i, i + 1);
+            for (int j = 0; j < input.length(); j++) {
+                String inputSubstring = input.substring(j, j + 1);
+                if (inputSubstring.equals(sequenceSubstring)) {
+                    checkList[i] = true;
+                }
+            }
+        }
+        for (boolean check : checkList) {
+            if (check == false) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
