@@ -8,15 +8,31 @@ import java.util.Scanner;
 
 public class Log {
 
-    private static File logFile;
-    private static String location = "log.txt";
-    private static Level level;
+    private File logFile;
+    private String location;
+    private Level level;
 
-    private Log() {
-        //EMPTY
+    private Log(String location) {
+        this.location(location);
     }
 
-    public static void showLog() {
+    public static Log get(String name) {
+        return LogStore.add(new Log(name));
+    }
+
+    public void createLogFile() throws IOException {
+        File file = new File(location);
+        if (file.getParentFile() != null && !file.getParentFile().mkdirs()) {
+            // EMPTY
+        }
+        if (!file.createNewFile()) {
+            Files.delete(file.toPath());
+            createLogFile();
+        }
+        logFile = file;
+    }
+
+    public void showLog() {
         Desktop desktop = Desktop.getDesktop();
         try {
             if (logFile != null) {
@@ -30,11 +46,11 @@ public class Log {
         }
     }
 
-    public static void out(String log) {
+    public void out(String log) {
         write(log);
     }
 
-    public static void out(Exception log) {
+    public void out(Exception log) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         log.printStackTrace(pw);
@@ -42,47 +58,27 @@ public class Log {
         write(sw.toString());
     }
 
-    public static void out(int log) {
+    public void out(int log) {
         write(String.valueOf(log));
     }
 
-    public static void out(boolean log) {
+    public void out(boolean log) {
         write(String.valueOf(log));
     }
 
-    public static void out(long log) {
+    public void out(long log) {
         write(String.valueOf(log));
     }
 
-    public static void out(char log) {
+    public void out(char log) {
         write(String.valueOf(log));
     }
 
-    public static void newLine() {
+    public void newLine() {
         write("");
     }
 
-    private static void createLogFile() throws IOException {
-        File file = new File(location);
-        if (file.getParentFile() != null && !file.getParentFile().mkdirs()) {
-            throw new NullPointerException("parent file could not be created");
-        }
-        if (!file.createNewFile()) {
-            Files.delete(file.toPath());
-            createLogFile();
-        }
-        logFile = file;
-    }
-
-    private static String createTimeStamp() {
-        LocalDateTime time = LocalDateTime.now();
-        return time.getHour() + ":" +
-                time.getMinute() + ":" +
-                time.getSecond() + ":" +
-                time.getNano();
-    }
-
-    private static void write(String log) {
+    private void write(String log) {
 
         if (logFile == null || !logFile.exists()) {
             try {
@@ -109,33 +105,41 @@ public class Log {
         level = null;
     }
 
-    public static File getLogFile() {
+    private String createTimeStamp() {
+        LocalDateTime time = LocalDateTime.now();
+        return time.getHour() + ":" +
+                time.getMinute() + ":" +
+                time.getSecond() + ":" +
+                time.getNano();
+    }
+
+    public File getLogFile() {
         return logFile;
     }
 
-    public static void location(String newLocation) {
-        location = newLocation + ".txt";
+    public void location(String newLocation) {
+        location = newLocation + ".log";
         logFile = null;
     }
 
-    public static void name(String name) {
+    public void name(String name) {
         if (logFile != null && logFile.getParentFile() != null) {
-            location = logFile.getParentFile().getAbsolutePath() + File.separator + name + ".txt";
+            location = logFile.getParentFile().getAbsolutePath() + File.separator + name + ".log";
         } else {
-            location = name + ".txt";
+            location = name + ".log";
         }
         logFile = null;
     }
 
-    public static void level(Level newLevel) {
+    public void level(Level newLevel) {
         level = newLevel;
     }
 
-    public static String getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public static void clear() {
+    public void clear() {
         if (logFile != null) {
             try {
                 BufferedWriter clear = new BufferedWriter(new FileWriter(logFile));
@@ -147,7 +151,7 @@ public class Log {
         }
     }
 
-    public static boolean delete() {
+    public boolean delete() {
         if (logFile == null) {
             return false;
         } else {
@@ -155,13 +159,13 @@ public class Log {
         }
     }
 
-    public static String search(String searchCase) {
+    public String search(String searchCase) {
 
         String[] keywords = searchCase.split(", ");
         StringBuilder build = new StringBuilder();
 
         try {
-            File searchLog = new File("searchLog.txt");
+            File searchLog = new File("searchLog.log");
             BufferedWriter write = new BufferedWriter(new FileWriter(searchLog));
 
             for (String keyWord : keywords) {
@@ -202,7 +206,7 @@ public class Log {
 
     }
 
-    private static boolean contains(String input, String sequence) {
+    private boolean contains(String input, String sequence) {
 
         boolean[] checkList = new boolean[sequence.length()];
 
