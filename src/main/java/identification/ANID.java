@@ -2,14 +2,28 @@ package identification;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class ANID {
 
     private final String token;
 
+    private static ArrayList<ANID> tokens = new ArrayList<>();
+
     public ANID() {
         token = buildToken();
+    }
+
+    public static ANID createToken(){
+        ANID temp = new ANID();
+        for(ANID target : tokens){
+            if(target.compare(temp)){
+                createToken();
+            }
+        }
+        tokens.add(temp);
+        return temp;
     }
 
     private String buildToken() {
