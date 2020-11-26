@@ -10,7 +10,7 @@
     </properties>
 
     <groupId>groupId</groupId>
-    <artifactId>LogSystem</artifactId>
+    <artifactId>Tools</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
