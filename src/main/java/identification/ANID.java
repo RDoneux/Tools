@@ -31,18 +31,6 @@ public class ANID {
         return temp;
     }
 
-    public static ANID createFromToken(String token) {
-        if (token.length() < 24) {
-            throw new IllegalArgumentException("token must be 24 characters long");
-        }
-        for (ANID target : tokens) {
-            if (target.compare(token)) {
-                throw new IllegalArgumentException("token exists");
-            }
-        }
-        return new ANID(token);
-    }
-
     private String buildToken() {
         try {
             Random r = SecureRandom.getInstanceStrong();
