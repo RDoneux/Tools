@@ -4,12 +4,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ANID {
 
     private final String token;
 
-    private static ArrayList<ANID> tokens = new ArrayList<>();
+    private static CopyOnWriteArrayList<ANID> tokens = new CopyOnWriteArrayList<>();
 
     public ANID() {
         token = buildToken();
