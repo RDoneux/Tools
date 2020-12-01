@@ -2,7 +2,6 @@ package identification;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -31,6 +30,17 @@ public class ANID {
         tokens.add(temp);
         return temp;
     }
+
+    public static ANID createFromToken(String token) {
+        ANID temp = new ANID(token);
+        for (ANID target : tokens) {
+            if (target.compare(temp)) {
+                throw new IllegalArgumentException("token already exists");
+            }
+        }
+        return temp;
+    }
+
 
     private String buildToken() {
         try {
