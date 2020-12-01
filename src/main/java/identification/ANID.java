@@ -15,15 +15,32 @@ public class ANID {
         token = buildToken();
     }
 
-    public static ANID createToken(){
+    private ANID(String token) {
+        this.token = token;
+    }
+
+
+    public static ANID createToken() {
         ANID temp = new ANID();
-        for(ANID target : tokens){
-            if(target.compare(temp)){
+        for (ANID target : tokens) {
+            if (target.compare(temp)) {
                 createToken();
             }
         }
         tokens.add(temp);
         return temp;
+    }
+
+    public static ANID createFromToken(String token) {
+        if (token.length() < 24) {
+            throw new IllegalArgumentException("token must be 24 characters long");
+        }
+        for (ANID target : tokens) {
+            if (target.compare(token)) {
+                throw new IllegalArgumentException("token exists");
+            }
+        }
+        return new ANID(token);
     }
 
     private String buildToken() {
