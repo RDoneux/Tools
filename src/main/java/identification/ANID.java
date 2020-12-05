@@ -41,8 +41,11 @@ public class ANID {
         return temp;
     }
 
+    public static String createUncheckedToken() {
+        return buildToken();
+    }
 
-    private String buildToken() {
+    private static String buildToken() {
         try {
             Random r = SecureRandom.getInstanceStrong();
             StringBuilder build = new StringBuilder();
