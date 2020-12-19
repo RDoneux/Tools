@@ -45,6 +45,26 @@ public class ANID {
         return buildToken();
     }
 
+    public static void clearTokens() {
+        tokens.clear();
+    }
+
+    public static void removeToken(ANID token) {
+        for (ANID target : tokens) {
+            if (target.compare(token)) {
+                tokens.remove(token);
+            }
+        }
+    }
+
+    public static void removeToken(String token) {
+        for (ANID target : tokens) {
+            if (target.compare(token)) {
+                tokens.remove(token);
+            }
+        }
+    }
+
     private static String buildToken() {
         try {
             Random r = SecureRandom.getInstanceStrong();
