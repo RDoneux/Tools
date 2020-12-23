@@ -60,9 +60,27 @@ public class ANID {
     public static void removeToken(String token) {
         for (ANID target : tokens) {
             if (target.compare(token)) {
-                tokens.remove(token);
+                tokens.remove(target);
             }
         }
+    }
+
+    public static boolean exists(ANID id) {
+        for (ANID target : tokens) {
+            if (id.compare(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean exists(String id) {
+        for (ANID target : tokens) {
+            if (target.compare(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String buildToken() {
@@ -93,6 +111,10 @@ public class ANID {
 
     public String getToken() {
         return token;
+    }
+
+    public static int getTokensLength() {
+        return tokens.size();
     }
 
 }

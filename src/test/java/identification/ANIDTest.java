@@ -41,5 +41,45 @@ public class ANIDTest {
 
     }
 
+    @Test
+    public void shouldClearAllTokens(){
+
+        ANID.clearTokens();
+
+        ANID id[] = new ANID[3];
+
+        for (int i = 0; i < id.length; i++) {
+            id[i] = ANID.createToken();
+        }
+
+        assertThat(ANID.getTokensLength()).isEqualTo(3);
+
+        ANID.clearTokens();
+
+        assertThat(ANID.getTokensLength()).isZero();
+    }
+
+    @Test
+    public void shouldRemoveToken(){
+
+        ANID id = ANID.createToken();
+
+        assertThat(ANID.exists(id)).isTrue();
+
+        ANID.removeToken(id);
+
+        assertThat(ANID.exists(id)).isFalse();
+
+        // test string token as well
+        id = ANID.createToken();
+        String token = id.getToken();
+
+        assertThat(ANID.exists(token)).isTrue();
+
+        ANID.removeToken(token);
+
+        assertThat(ANID.exists(token)).isFalse();
+    }
+
 
 }
