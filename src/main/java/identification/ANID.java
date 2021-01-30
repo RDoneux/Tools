@@ -9,7 +9,7 @@ public class ANID {
 
     private final String token;
 
-    private static CopyOnWriteArrayList<ANID> tokens = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<ANID> tokens = new CopyOnWriteArrayList<>();
 
     public ANID() {
         token = buildToken();

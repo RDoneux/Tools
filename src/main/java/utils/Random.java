@@ -2,7 +2,7 @@ package utils;
 
 public class Random {
 
-    private static java.util.Random r = new java.util.Random();
+    private static final java.util.Random r = new java.util.Random();
 
     public static Integer getInt(int low, int high) {
         if (low == high) return low;

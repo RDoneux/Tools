@@ -15,7 +15,7 @@ public class ANIDTest {
 
     @Test
     public void shouldCreateUniqueID() {
-        ANID id[] = new ANID[10];
+        ANID[] id = new ANID[10];
 
         for (int i = 0; i < id.length; i++) {
             id[i] = ANID.createToken();
@@ -46,7 +46,7 @@ public class ANIDTest {
 
         ANID.clearTokens();
 
-        ANID id[] = new ANID[3];
+        ANID[] id = new ANID[3];
 
         for (int i = 0; i < id.length; i++) {
             id[i] = ANID.createToken();
