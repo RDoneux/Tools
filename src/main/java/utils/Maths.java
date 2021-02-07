@@ -6,8 +6,9 @@ public class Maths {
         return ((x < y) ? x : y);
     }
 
-    public static int getHigh(int x, int y){
+    public static int getHigh(int x, int y) {
         return ((x < y) ? y : x);
     }
+
 
 }
